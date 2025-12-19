@@ -199,9 +199,9 @@ export default function Home() {
       return {
         type: "theory+lab",
         assignmentMarks: theoryAssignmentMarks,
-       quizMarks:theoryQuizMarks,
-        midTermMarks:theoryMidMarks,
-        finalExamMarks:theoryFinalMarks,
+        quizMarks: theoryQuizMarks,
+        midTermMarks: theoryMidMarks,
+        finalExamMarks: theoryFinalMarks,
         theoryTotal,
         labAssignmentMarks,
         labMidTermMarks,
@@ -214,6 +214,42 @@ export default function Home() {
         totalAggregate: currentTotal,
       };
     }
+  };
+
+  const isFormValid = () => {
+    // Check basic fields
+    if (!subjectName || !subjectType) return false;
+
+    // Check theory-specific credit hours
+    if (subjectType === "theory" && !creditHours) return false;
+
+    // Check theory+lab credit type
+    if (subjectType === "theory+lab" && !creditType) return false;
+
+    // Check all assignments are filled
+    const assignmentsValid = assignments.every(
+      (a) => a.value !== "" && a.total !== ""
+    );
+    if (!assignmentsValid) return false;
+
+    // Check all quizzes are filled
+    const quizzesValid = quizzes.every((q) => q.value !== "" && q.total !== "");
+    if (!quizzesValid) return false;
+
+    // Check midterm
+    if (midTerm === "" || midTermTotal === "") return false;
+
+    // For theory+lab, check lab fields
+    if (subjectType === "theory+lab") {
+      const labAssignmentsValid = labAssignments.every(
+        (a) => a.value !== "" && a.total !== ""
+      );
+      if (!labAssignmentsValid) return false;
+
+      if (labMid === "" || labMidTotal === "") return false;
+    }
+
+    return true;
   };
 
   const handleCalculate = () => {
@@ -642,7 +678,12 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-4 sm:mt-6">
                 <button
                   onClick={handleCalculate}
-                  className="flex-1 bg-indigo-600 text-white py-3 sm:py-4 rounded-lg hover:bg-indigo-700 transition-all font-bold text-base sm:text-lg shadow-lg"
+                  disabled={!isFormValid()}
+                  className={`flex-1 py-3 sm:py-4 rounded-lg transition-all font-bold text-base sm:text-lg shadow-lg ${
+                    isFormValid()
+                      ? "bg-indigo-600 text-white hover:bg-indigo-700 cursor-pointer"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  }`}
                 >
                   Calculate Aggregate
                 </button>
