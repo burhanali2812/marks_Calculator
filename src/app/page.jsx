@@ -4,7 +4,7 @@ import { useState } from "react";
 export default function Home() {
   const [subjectName, setSubjectName] = useState("");
   const [subjectType, setSubjectType] = useState(""); // 'theory' or 'theory+lab'
-  const [creditType, setCreditType] = useState(""); // '3,1' or '2,1'
+  const [creditType, setCreditType] = useState(""); 
   const [creditHours, setCreditHours] = useState("");
 
   // Theory marks
