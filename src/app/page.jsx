@@ -77,6 +77,21 @@ export default function Home() {
     setLabAssignments(newLabAssignments);
   };
 
+  // Grading table based on COMSATS semester system percentage chart
+  const getGrade = (percentage) => {
+    if (percentage >= 85) return { letter: "A", points: "3.67 - 4.00" };
+    if (percentage >= 80) return { letter: "A-", points: "3.34 - 3.66" };
+    if (percentage >= 75) return { letter: "B+", points: "3.01 - 3.33" };
+    if (percentage >= 71) return { letter: "B", points: "2.67 - 3.00" };
+    if (percentage >= 68) return { letter: "B-", points: "2.34 - 2.66" };
+    if (percentage >= 64) return { letter: "C+", points: "2.01 - 2.33" };
+    if (percentage >= 61) return { letter: "C", points: "1.67 - 2.00" };
+    if (percentage >= 58) return { letter: "C-", points: "1.31 - 1.66" };
+    if (percentage >= 54) return { letter: "D+", points: "1.01 - 1.30" };
+    if (percentage >= 50) return { letter: "D", points: "0.10 - 1.00" };
+    return { letter: "F", points: "0.00" };
+  };
+
   const calculateAggregate = () => {
     if (subjectType === "theory") {
       // Calculate theory only in actual marks
@@ -126,6 +141,7 @@ export default function Home() {
         marksNeededInFinal,
         percentageNeededInFinal,
         totalAggregate: currentTotal,
+        grade: getGrade(currentTotal),
       };
     } else {
       // Calculate theory + lab in actual marks
@@ -212,6 +228,7 @@ export default function Home() {
         currentTotal,
         marksNeededToPass,
         totalAggregate: currentTotal,
+        grade: getGrade(currentTotal),
       };
     }
   };
@@ -838,6 +855,27 @@ export default function Home() {
               <p className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white">
                 {results.totalAggregate?.toFixed(2)} / 100
               </p>
+
+              {/* Grade Display */}
+              <div className="flex items-center justify-center gap-4 mt-4">
+                <div className="bg-white/20 rounded-xl px-6 py-3">
+                  <p className="text-sm text-indigo-100 font-semibold mb-1">
+                    Grade
+                  </p>
+                  <p className="text-3xl sm:text-4xl font-bold text-white">
+                    {results.grade?.letter}
+                  </p>
+                </div>
+                <div className="bg-white/20 rounded-xl px-6 py-3">
+                  <p className="text-sm text-indigo-100 font-semibold mb-1">
+                    Grade Points
+                  </p>
+                  <p className="text-xl sm:text-2xl font-bold text-white">
+                    {results.grade?.points}
+                  </p>
+                </div>
+              </div>
+
               <p className="text-indigo-100 mt-3 text-lg">
                 {results.totalAggregate >= 85
                   ? "Excellent!"
@@ -887,7 +925,7 @@ export default function Home() {
             {results.totalAggregate >= 50 && (
               <div className="bg-green-50 border-2 border-green-400 rounded-lg sm:rounded-xl p-4 sm:p-6 text-center">
                 <h3 className="text-lg sm:text-xl font-bold text-green-900 mb-2">
-                  ✅ Congratulations!
+                   Congratulations!
                 </h3>
                 <p className="text-sm sm:text-base text-gray-700">
                   You have already passed with{" "}
